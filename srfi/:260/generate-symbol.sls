@@ -1,3 +1,4 @@
+#!r6rs
 (library (srfi :260 generate-symbol)
   (export generate-symbol)
   (import
