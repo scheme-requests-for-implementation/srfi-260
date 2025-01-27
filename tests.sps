@@ -5,7 +5,7 @@
 
 (import
   (rnrs)
-  (srfi :XXX generate-symbol))
+  (srfi :260 generate-symbol))
 
 (assert (eqv? #t
           (let ([s (generate-symbol)])
