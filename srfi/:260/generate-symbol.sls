@@ -1,4 +1,8 @@
 #!r6rs
+
+;;; SPDX-FileCopyrightText: 2025 Marc Nieper-Wißkirchen
+;;; SPDX-License-Identifier: MIT
+
 (library (srfi :260 generate-symbol)
   (export generate-symbol)
   (import
