@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+SPDX-FileCopyrightText: 2025 Marc Nieper-Wißkirchen
+SPDX-License-Identifier: MIT
+-->
+  <head>
+    <meta charset="utf-8">
+    <title>SRFI XXX: Generated Symbols</title>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"></head>
+  <body>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>XXX: Generated Symbols</h1>
+
+<p>by Marc Nieper-Wißkirchen</p>
+
+<h2 id="status">Status</h2>
+
+<p style="color: red;">For editor's use only.  Please do not edit this section.</p>
+
+<p>??? the draft/final/withdrawn status of the SRFI, information on how
+to subscribe to its mailing list, and important dates in its history.
+The editor will add this section.</p>
+
+<h2 id="abstract">Abstract</h2>
+
+<p>This SRFI defines the procedure <code>generate-symbol</code>. Each
+time it is invoked, the procedure returns a new symbol whose name
+cannot be guessed. The returned symbol is a standard symbol for all
+purposes; it obeys write/read invariance and it is equal to another
+symbol if and only if their names are spelt the same.</p>
+
+<h2 id="rationale">Rationale</h2>
+
+<p>A <dfn>unique object</dfn> is a Scheme value that is not equal
+(usually with respect to <code>eqv?</code>) to existing (or potentially
+existing) objects. Unique objects have many use cases, for example as
+private keys in data structures or to uniquely mark other values.</p>
+
+<p>Scheme has many ways to create such unique objects.  For many
+purposes, an expression like <code>(string #\m)</code> can be used to
+create a unique object. To improved type-safety, alternatively, a
+constructor of a record type with at least one mutable field can be
+invoked.</p>
+
+<p>There are circumstances where such unique objects, may they be
+strings or records, cannot be used because an object of a particular
+type, specifically a symbol, is needed. In the case of Scheme, this
+applies to its syntax system. An identifier is a syntax object that is
+a wrapped symbol
+(see <a href="https://www.r6rs.org/">R<sup>6</sup>RS</a>).  To
+generate unique identifiers with a given wrap, unique symbols (and not
+strings, records, etc.), therefore, have to be generated.</p>
+
+<p>The procedure <code>generate-symbol</code> defined in this SRFI
+provides a means to generate unique symbols.</p>
+
+<p>Alternative proposals
+like <a href="https://srfi.schemers.org/srfi-258/srfi-258.html">SRFI
+258</a> provide so-called uninterned symbols that can also be used for
+this purpose (at least after amending the definition of a syntax
+object). Introducing uninterned symbols into the standard, however,
+would weaken the semantics of symbols. Two symbols would no longer be
+identical (in the sense of <code>eqv?</code>) if and only if their
+names are spelt the same way.</p>
+
+<p>Uninterned symbols have another disadvantage in that they defeat
+write/read invariance. Yet, some kind of write/read invariance is
+likely needed when uninterned symbols are used in identifier names so
+that expanded Scheme code can be serialised (e.g. for separate AOT
+expansion/compilation).</p>
+
+<p>As names for generated symbols can be generated lazily, the alleged
+advantage of uninterned symbols that no names have to be generated, is
+a bogus one. A name for a generated symbol only has to be generated
+for use cases that need the unique name
+from <code>symbol-&gt;string</code>, e.g. for write/read purposes, but
+these use cases are not covered by uninterned symbols anyway.</p>
+
+<p>Generated symbols need no new lexical syntax.  The notion of a
+Scheme datum value does not change; a Scheme datum value remains a
+Scheme value that obeys write/read equivalence (up
+to <code>equal?</code>).</p>
+
+<h2 id="specification">Specification</h2>
+
+<h3>Libraries</h3>
+
+<p>The following binding is exported by the <code>(srfi :XXX generate-symbol)</code> library:</p>
+
+<p><u>Procedure:</u> <code><b>generate-symbol</b></code> [<var>pretty-name</var>]
+
+<p>The optional argument, <var>pretty-name</var>, must, if present, be a string.</p>
+
+<p>Returns a symbol that is not identical to any existing or
+potentially existing symbol, for all practical purposes.</p>
+
+<p><i>Note:</i> This means that for every Scheme
+expression <code>&langle;expression&rangle;</code> whose (possibly
+non-deterministic) value does not depend on the result
+of <code>symbol-&gt;string</code> applied to the
+result <var>gensym</var> of a previous invocation
+of <code>generate-symbol</code>, its value is not equal (in the sense
+of <code>equal?</code>) to the value
+of <code>(symbol-&gt;string</code> <var>gensym</var><code>)</code> for
+all practical purposes.</p>
+
+<p>The implementation may use the argument <var>pretty-name</var> for debugging or pretty-printing purposes.</p>
+
+<pre>(let ([s (generate-symbol)])
+  (symbol=? s s)) ; => #t</pre>
+
+<pre>(let ([s1 (generate-symbol)] [s2 (generate-symbol)])
+  (symbol=? s1 s2)) ;=> #f</pre>
+
+<pre>(let ([s1 (generate-symbol "g1")] [s2 (generate-symbol "g1")])
+  (symbol=? s1 s2)) ;=> #f</pre>
+
+<pre>(let ([s1 (generate-symbol "g1")] [s2 'g1])
+  (symbol=? s1 s2)) ;=> #f</pre>
+
+<pre>(let ([s (generate-symbol "g1")])
+  (string=? (symbol-&gt;string s) "g1")) ;=> #f</pre>
+
+<pre>(let ([s (generate-symbol)])
+  (symbol=? (string-&gt;symbol (symbol-&gt;string s)) s)) ;=> #t</pre>
+
+<h2 id="implementation">Implementation</h2>
+
+<p>A native implementation does not need to create a name for the
+symbol returned by an application of <code>generate-symbol</code>
+immediately but only lazily when <code>symbol-&gt;string</code> is
+applied to the symbol for the first
+time. If <code>symbol-&gt;string</code> is never applied as will likely
+be the case in many uses of generated symbols, no name has to be
+created. Symbols generated by <code>generate-symbol</code> can
+therefore replace uninterned symbols known from some Scheme
+implementations.</p>
+
+<p>When an implementation has to create a name, it can simply choose a
+randomly generated name so that the entropy of the random variable
+described by <code>(lambda () (symbol-&gt;string (generate-symbol)))</code> is
+sufficiently high (e.g. 122 bits as in the case of Version 4 UUIDs but
+note that this SRFI prescribes no particular form of the symbol name).</p>
+
+<p>The portable <a href="srfi/:XXX/generate-symbol.sls">sample
+implementation</a> creates random names eagerly and
+uses <code>/dev/random</code> for this purpose.</p>
+
+<h2 id="acknowledgements">Acknowledgements</h2>
+
+<p>This SRFI was created in response to <a href="https://srfi.schemers.org/srfi-258/srfi-258.html">SRFI 258: Uninterned Symbols</a>.</p>
+
+<h2 id="copyright">Copyright</h2>
+<p>&copy; 2025 Marc Nieper-Wißkirchen.</p>
+
+<p>
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:</p>
+
+<p>
+  The above copyright notice and this permission notice (including the
+  next paragraph) shall be included in all copies or substantial
+  portions of the Software.</p>
+<p>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.</p>
+
+  <hr>
+  <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
