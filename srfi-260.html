@@ -41,7 +41,7 @@ private keys in data structures or to uniquely mark other values.</p>
 
 <p>Scheme has many ways to create such unique objects.  For many
 purposes, an expression like <code>(string #\m)</code> can be used to
-create a unique object. To improved type-safety, alternatively, a
+create a unique object. To improve type safety, alternatively, a
 constructor of a record type with at least one mutable field can be
 invoked.</p>
 
@@ -73,7 +73,7 @@ that expanded Scheme code can be serialised (e.g. for separate AOT
 expansion/compilation).</p>
 
 <p>As names for generated symbols can be generated lazily, the alleged
-advantage of uninterned symbols that no names have to be generated, is
+advantage of uninterned symbols — that no names have to be generated — is
 a bogus one. A name for a generated symbol only has to be generated
 for use cases that need the unique name
 from <code><span class="nobr">symbol-&gt;string</span></code>, e.g. for write/read purposes, but
