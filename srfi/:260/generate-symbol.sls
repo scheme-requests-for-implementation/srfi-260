@@ -1,4 +1,4 @@
-(library (srfi :XXX generate-symbol)
+(library (srfi :260 generate-symbol)
   (export generate-symbol)
   (import
     (rnrs)

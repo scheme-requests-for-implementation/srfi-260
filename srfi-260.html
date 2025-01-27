@@ -6,12 +6,12 @@ SPDX-License-Identifier: MIT
 -->
   <head>
     <meta charset="utf-8">
-    <title>SRFI XXX: Generated Symbols</title>
+    <title>SRFI 260: Generated Symbols</title>
     <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
     <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1"></head>
   <body>
-    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>XXX: Generated Symbols</h1>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>260: Generated Symbols</h1>
 
 <p>by Marc Nieper-Wißkirchen</p>
 
@@ -87,7 +87,7 @@ to <code>equal?</code>).</p>
 
 <h3>Libraries</h3>
 
-<p>The following binding is exported by the <code>(srfi :XXX generate-symbol)</code> library:</p>
+<p>The following binding is exported by the <code>(srfi :260 generate-symbol)</code> library:</p>
 
 <p><u>Procedure:</u> <code><b>generate-symbol</b></code> [<var>pretty-name</var>]
 
@@ -144,7 +144,7 @@ described by <code>(lambda () (symbol-&gt;string (generate-symbol)))</code> is
 sufficiently high (e.g. 122 bits as in the case of Version 4 UUIDs but
 note that this SRFI prescribes no particular form of the symbol name).</p>
 
-<p>The portable <a href="srfi/:XXX/generate-symbol.sls">sample
+<p>The portable <a href="srfi/:260/generate-symbol.sls">sample
 implementation</a> creates random names eagerly and
 uses <code>/dev/random</code> for this purpose.</p>
 
