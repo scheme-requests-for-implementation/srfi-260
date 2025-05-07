@@ -11,7 +11,7 @@ keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-260/][SRFI 260]]: Generated Symbols, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
-This SRFI is in /draft/ status.
+This SRFI is in /final/ status.
 See also [[/srfi-258/][SRFI 258: Uninterned symbols]].
 The full documentation for this SRFI can be found in the [[https://srfi.schemers.org/srfi-260/srfi-260.html][SRFI Document]].
 
